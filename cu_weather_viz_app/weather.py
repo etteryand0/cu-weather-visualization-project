@@ -23,19 +23,19 @@ def weather():
     start_city = request.form.get("start_city")
     end_city = request.form.get("end_city")
 
-    try:
-        start_location_key = get_location_key(start_city)
-        end_location_key = get_location_key(end_city)
-    except (ConnectionError, TimeoutError) as e:
-        current_app.logger.error(e)
-        return render_template(
-            "weather.html", error="Сервис погоды не доступен в данный момент"
-        )
-    except requests.exceptions.HTTPError as e:
-        current_app.logger.error(e)
-        return render_template(
-            "weather.html", error=parse_error_code(e.response.status_code)
-        )
+    # try:
+    #     start_location_key = get_location_key(start_city)
+    #     end_location_key = get_location_key(end_city)
+    # except (ConnectionError, TimeoutError) as e:
+    #     current_app.logger.error(e)
+    #     return render_template(
+    #         "weather.html", error="Сервис погоды не доступен в данный момент"
+    #     )
+    # except requests.exceptions.HTTPError as e:
+    #     current_app.logger.error(e)
+    #     return render_template(
+    #         "weather.html", error=parse_error_code(e.response.status_code)
+    #     )
 
     if not start_location_key:
         return render_template("weather.html", error=f"Город {start_city} не найден")
@@ -45,8 +45,8 @@ def weather():
     current_app.logger.info(f"start location key = '{start_location_key}'")
     current_app.logger.info(f"end location key = '{end_location_key}'")
 
-    # start_location_key = 294021  # Москва
-    # end_location_key = 290150  # Якутск
+    start_location_key = 294021  # Москва
+    end_location_key = 290150  # Якутск
 
     try:
         start_weather_data = get_weather_data(start_location_key)

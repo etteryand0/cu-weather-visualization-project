@@ -5,7 +5,9 @@ description = "Central University AccuWeather app"
 dependencies = [
     "flask",
     "requests",
-    "python-dotenv"
+    "python-dotenv",
+    "plotly",
+    "dash"
 ]
 
 [build-system]
