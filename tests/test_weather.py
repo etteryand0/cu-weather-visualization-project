@@ -1,6 +1,6 @@
 import unittest
 
-from cu_weather_app.weather import check_bad_weather
+from cu_weather_viz_app.weather import check_bad_weather
 
 
 class TestCheckBadWeather(unittest.TestCase):

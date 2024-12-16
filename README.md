@@ -16,7 +16,7 @@ echo "ACCUWEATHER_API_KEY=myaccuweathertoken" > .env
 ```
 3. Запустить веб приложение
 ```shell
-python -m flask --app cu_weather_app run --debug
+python -m flask --app cu_weather_viz_app run --debug
 ```
 
 ## Тестирование

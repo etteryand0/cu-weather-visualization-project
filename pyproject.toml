@@ -1,10 +1,11 @@
 [project]
-name = "cu_weather_app"
+name = "cu_weather_viz_app"
 version = "1.0.0"
 description = "Central University AccuWeather app"
 dependencies = [
     "flask",
-    "requests"
+    "requests",
+    "python-dotenv"
 ]
 
 [build-system]

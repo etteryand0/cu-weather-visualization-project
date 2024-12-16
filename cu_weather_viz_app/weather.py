@@ -1,4 +1,4 @@
-from cu_weather_app.api import (
+from cu_weather_viz_app.api import (
     get_location_key,
     get_weather_data,
     parse_error_code,
