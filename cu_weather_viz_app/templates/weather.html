@@ -3,9 +3,11 @@
 {% block main %}
   <h1>Проверка погодных условий</h1>
   <form action="/" method="post">
-    <label for="start_city">Начальный город:</label>
+    <label for="start_city">Начальный город:*</label>
     <input type="text" id="start_city" name="start_city" required>
-    <label for="end_city">Конечный город:</label>
+    <label for="pitstop_cities">Промежуточные города:</label>
+    <input type="text" id="pitstop_cities" name="pitstop_cities" required placeholder="Города через запятую: Москва, Якутск">
+    <label for="end_city">Конечный город:*</label>
     <input type="text" id="end_city" name="end_city" required>
     <button type="submit">Проверить погоду</button>
   </form>

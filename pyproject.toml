@@ -3,11 +3,13 @@ name = "cu_weather_viz_app"
 version = "1.0.0"
 description = "Central University AccuWeather app"
 dependencies = [
-    "flask",
+    "flask[async]",
     "requests",
     "python-dotenv",
     "plotly",
-    "dash"
+    "dash",
+    "asyncio",
+    "aiohttp"
 ]
 
 [build-system]

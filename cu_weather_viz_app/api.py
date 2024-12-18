@@ -1,14 +1,22 @@
 import os
 
+import aiohttp
 import requests
 
 
-def get_location_key(city_name):
+async def get_location_key(city_name, *, session=None):
     url = "http://dataservice.accuweather.com/locations/v1/cities/search"
     params = {"apikey": os.environ["ACCUWEATHER_API_KEY"], "q": city_name}
-    response = requests.get(url, params=params)
-    response.raise_for_status()
-    data = response.json()
+
+    if session is not None:
+        response = await session.get(url, params=params)
+        response.raise_for_status()
+        data = await response.json()
+    else:
+        async with aiohttp.ClientSession() as s:
+            response = await s.get(url, params=params)
+            response.raise_for_status()
+            data = await response.json()
     if data:
         return data[0]["Key"]
     return None
