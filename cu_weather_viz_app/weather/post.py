@@ -1,25 +1,21 @@
+from cu_weather_viz_app.weather.utils import check_bad_weather, parse_weather_conditions
 from cu_weather_viz_app.api import (
     get_location_key,
     get_weather_data,
     parse_error_code,
 )
+from . import bp
 
 from flask import current_app
 import requests
 from flask import (
-    Blueprint,
     render_template,
     request,
 )
 
-bp = Blueprint("weather", __name__, url_prefix="/weather")
 
-
-@bp.route("/", methods=("GET", "POST"))
-def weather():
-    if request.method == "GET":
-        return render_template("weather.html")
-
+@bp.route("/", methods=("POST",))
+def query_weather():
     start_city = request.form.get("start_city")
     end_city = request.form.get("end_city")
 
@@ -76,26 +72,3 @@ def weather():
         "weather.html",
         result=f"Погода в {start_city}: {start_result}. Погода в {end_city}: {end_result}.",
     )
-
-
-def check_bad_weather(temperature, wind_speed, precipitation_probability, humidity):
-    if (
-        temperature <= 0
-        or temperature >= 35
-        or wind_speed >= 50
-        or precipitation_probability >= 70
-        or humidity >= 90
-    ):
-        return "Плохие погодные условия"
-    else:
-        return "Хорошие погодные условия"
-
-
-def parse_weather_conditions(weather_data):
-    conditions = weather_data["DailyForecasts"][0]
-    return {
-        "temperature": conditions["Temperature"]["Maximum"]["Value"],
-        "wind_speed": conditions["Day"]["Wind"]["Speed"]["Value"],
-        "precipitation_probability": conditions["Day"]["PrecipitationProbability"],
-        "humidity": conditions["Day"]["RelativeHumidity"]["Average"],
-    }
