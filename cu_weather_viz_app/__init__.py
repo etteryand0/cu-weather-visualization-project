@@ -1,6 +1,9 @@
 import os
+import locale
 
 from flask import Flask
+
+locale.setlocale(locale.LC_TIME, "rus")
 
 
 def create_app():
