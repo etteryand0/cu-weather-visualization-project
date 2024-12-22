@@ -83,7 +83,6 @@ def create_dash_app(server):
     app.layout = html.Div(
         [
             dcc.Location(id="url", refresh=False),
-            html.H1("Прогноз погоды на 5 дней"),
             dcc.Graph(id="temperature-graph"),
             dcc.Graph(id="wind-humidity-graph"),
             dcc.Graph(id="precipitation-graph"),

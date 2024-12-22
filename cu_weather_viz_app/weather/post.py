@@ -1,7 +1,6 @@
 from cu_weather_viz_app.weather.utils import check_bad_weather, parse_weather_conditions
 from cu_weather_viz_app.api import (
     get_location_key,
-    get_weather_data,
     parse_error_code,
 )
 from . import bp
@@ -9,7 +8,6 @@ from . import bp
 import asyncio
 import aiohttp
 from flask import current_app
-import requests
 from flask import (
     render_template,
     request,
@@ -23,7 +21,7 @@ async def query_weather():
     pitstop_cities = list(
         filter(
             lambda city: len(city) > 3,
-            [city.strip() for city in request.form.get("pitstop_cities").split(" ")],
+            [city.strip() for city in request.form.get("pitstop_cities").split(",")],
         )
     )
 
@@ -40,11 +38,9 @@ async def query_weather():
             return render_template(
                 "weather.html", error="Сервис погоды не доступен в данный момент"
             )
-        except requests.exceptions.HTTPError as e:
+        except aiohttp.ClientResponseError as e:
             current_app.logger.error(e)
-            return render_template(
-                "weather.html", error=parse_error_code(e.response.status_code)
-            )
+            return render_template("weather.html", error=parse_error_code(e.status))
 
     missing_cities = list(
         filter(
@@ -70,35 +66,6 @@ async def query_weather():
     )
     current_app.logger.info(f"end location key = '{end_location_key}'")
 
-    # start_location_key = 294021  # Москва
-    # pitstop_location_keys = [292712, 294490, 294927] # Иркутск, Орёл, Владивосток
-    # end_location_key = 290150  # Якутск
+    cities = list(zip(location_keys, [start_city, *pitstop_cities, end_city]))
 
-    try:
-        start_weather_data = get_weather_data(start_location_key)
-        end_weather_data = get_weather_data(end_location_key)
-    except (ConnectionError, TimeoutError) as e:
-        current_app.logger.error(e)
-        return render_template(
-            "weather.html", error="Сервис погоды не доступен в данный момент"
-        )
-    except requests.exceptions.HTTPError as e:
-        return render_template(
-            "weather.html", error=parse_error_code(e.response.status_code)
-        )
-
-    if not start_weather_data or not end_weather_data:
-        return render_template(
-            "weather.html", error="Не удалось получить данные о погоде"
-        )
-
-    start_conditions = parse_weather_conditions(start_weather_data)
-    end_conditions = parse_weather_conditions(end_weather_data)
-
-    start_result = check_bad_weather(**start_conditions)
-    end_result = check_bad_weather(**end_conditions)
-
-    return render_template(
-        "weather.html",
-        result=f"Погода в {start_city}: {start_result}. Погода в {end_city}: {end_result}.",
-    )
+    return render_template("result.html", cities=cities)
