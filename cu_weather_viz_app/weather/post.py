@@ -32,7 +32,7 @@ async def query_weather():
         ]
 
         try:
-            location_keys = await asyncio.gather(*coroutines)
+            result = await asyncio.gather(*coroutines)
         except (ConnectionError, TimeoutError) as e:
             current_app.logger.error(e)
             return render_template(
@@ -41,6 +41,11 @@ async def query_weather():
         except aiohttp.ClientResponseError as e:
             current_app.logger.error(e)
             return render_template("weather.html", error=parse_error_code(e.status))
+
+    location_keys = [key for key, _ in result]
+    locations = [location for _, location in result]
+    for i, city_name in enumerate([start_city, *pitstop_cities, end_city]):
+        locations[i]["name"] = city_name
 
     missing_cities = list(
         filter(
@@ -68,4 +73,4 @@ async def query_weather():
 
     cities = list(zip(location_keys, [start_city, *pitstop_cities, end_city]))
 
-    return render_template("result.html", cities=cities)
+    return render_template("result.html", cities=cities, locations=locations)

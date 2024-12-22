@@ -19,13 +19,6 @@ echo "ACCUWEATHER_API_KEY=myaccuweathertoken" > .env
 python -m flask --app cu_weather_viz_app run --debug
 ```
 
-## Тестирование
-
-Что бы проверить функцию `check_weather_bad`, запустите юнит тесты 
-```shell
-python -m unittest discover
-```
-
 ## Обработанные ошибки
 
 1. **ConnectionError**

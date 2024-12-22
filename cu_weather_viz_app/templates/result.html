@@ -1,6 +1,20 @@
 {% extends 'base.html' %}
 
+{% block meta %}
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        #map {
+            height: 600px; 
+            width: 100%;
+        }
+    </style>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+{% endblock %}
+
 {% block main %}
+
+    <h2>Маршрут на карте</h2>
+    <div id="map"></div>
 
     <h2>Прогноз погоды на 5 дней вперёд</h2>
     <h3>Начальный город: {{ cities[0][1] }}</h3>
@@ -23,4 +37,30 @@
     </div>
 
 
+    <script>
+        const map = L.map('map').setView([20, 0], 2);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap'
+        }).addTo(map);
+
+        const locations = {{ locations|tojson }};
+        const latlngs = [];
+
+        locations.forEach(function(location) {
+            const marker = L.marker([location.latitude, location.longitude])
+                .addTo(map)
+                .bindPopup(location.name);
+            
+            latlngs.push([location.latitude, location.longitude]);
+        });
+
+        const polyline = L.polyline(latlngs, { color: 'blue' }).addTo(map);
+
+        map.fitBounds(polyline.getBounds());
+
+        zattribution = document.querySelector(".leaflet-control-attribution")
+        zattribution.remove()
+    </script>
 {% endblock %}

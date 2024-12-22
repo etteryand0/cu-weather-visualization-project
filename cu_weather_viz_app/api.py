@@ -26,7 +26,10 @@ async def get_location_key(city_name, *, session=None):
             response.raise_for_status()
             data = await response.json()
     if data:
-        return data[0]["Key"]
+        return data[0]["Key"], {
+            "latitude": data[0]["GeoPosition"]["Latitude"],
+            "longitude": data[0]["GeoPosition"]["Longitude"],
+        }
     return None
 
 
